@@ -20,10 +20,19 @@
     return [self SKobjectAtIndex:index];
 }
 
+/* __NSArray0 没有元素，也不可以变 */
+- (id) safeObjectAtIndex0:(NSUInteger)index {
+    return nil;
+}
+
 + (void) load{
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [self swizzleMethod:@selector(SKobjectAtIndex:) tarClass:@"__NSArrayI" tarSel:@selector(objectAtIndex:)];
+        NSArray *obj = [[NSArray alloc] initWithObjects:@0,nil];
+        [self swizzleMethod:@selector(SKobjectAtIndex:) tarClass:NSStringFromClass([obj class]) tarSel:@selector(objectAtIndex:)];
+        
+        obj = [[NSArray alloc] init];
+        [self swizzleMethod:@selector(safeObjectAtIndex0:) tarClass:NSStringFromClass([obj class]) tarSel:@selector(objectAtIndex:)];
     });
 }
 @end
